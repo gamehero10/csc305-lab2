@@ -9,7 +9,7 @@ public:
   Fit ();
   ~Fit ();
   static void firstFit (Jobs &, Partitions &);
-  static int nextFit (Jobs &, Partitions &);
+  static void nextFit (Jobs &, Partitions &);
   static void bestFit (Jobs &, Partitions &);
   static void worstFit (Jobs &, Partitions &);
 };
@@ -46,7 +46,7 @@ void Fit::firstFit (Jobs & jobs, Partitions & partitions) {
   return;
 }
 
-int Fit::nextFit (Jobs & jobs, Partitions & partitions) {
+void Fit::nextFit (Jobs & jobs, Partitions & partitions) {
 
   // Set reference for next partition;
   int nextPartition = 0;
