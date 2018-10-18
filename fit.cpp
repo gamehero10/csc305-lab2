@@ -9,7 +9,7 @@ public:
   Fit ();
   ~Fit ();
   static void firstFit (Jobs &, Partitions &);
-  static int nextFit (Jobs &, Partitions &, int);
+  static int nextFit (Jobs &, Partitions &);
   static void bestFit (Jobs &, Partitions &);
   static void worstFit (Jobs &, Partitions &);
 };
@@ -46,7 +46,10 @@ void Fit::firstFit (Jobs & jobs, Partitions & partitions) {
   return;
 }
 
-int Fit::nextFit (Jobs & jobs, Partitions & partitions, int nextPartition) {
+int Fit::nextFit (Jobs & jobs, Partitions & partitions) {
+
+  // Set reference for next partition;
+  int nextPartition = 0;
 
   // Iterate through jobs.
   for (int j = 0; j < jobs.size(); j++) {
@@ -63,8 +66,12 @@ int Fit::nextFit (Jobs & jobs, Partitions & partitions, int nextPartition) {
         // Add reference of partition to job.
         jobs.get(j)->setPartition(i);
         
-        // Assign next partition.
-        nextPartition = i + 1;
+        // If next partition is out of range, set back to start of list.
+        if (i + 1 >= partitions.size())
+          nextPartition = 0;
+        // Else if still in range, set for next partition.
+        else
+          nextPartition = i + 1;
 
         // Break out of paritions loop since job has been assigned.
         break;
