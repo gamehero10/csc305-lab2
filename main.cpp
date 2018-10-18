@@ -177,23 +177,34 @@ int main () {
 	switch (input) {
 		case 1:
 			Fit::firstFit(jobs, partitions);
+      break;
 		case 2:
 			Fit::nextFit(jobs, partitions);
+      break;
 		case 3:
 			Fit::bestFit(jobs, partitions);
+      break;
 		case 4:
 			Fit::worstFit(jobs, partitions);
+      break;
 		default:
 			return -1;
 	}
 
+  display(jobs, partitions);
+
   jobs.~Jobs();
   partitions.~Partitions();
+
+  return 0;
 }
 
 void display (Jobs & jobs, Partitions & partitions) {
-  for (int i = 0; i < 5; i++) {
-    cout << "Job name" << jobs.get(i)->getName();
+  cout << "::FINAL OUTPUT::" << endl;
+  skipLines(2);
+
+  for (int i = 0; i < jobs.size(); i++) {
+    cout << "Job name: " << jobs.get(i)->getName();
     cout << ", size: " << jobs.get(i)->getSize();
     cout << ", status: " << jobs.get(i)->getStatus() << endl;
 
@@ -208,7 +219,7 @@ void display (Jobs & jobs, Partitions & partitions) {
 
   cout << endl;
 
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < partitions.size(); i++) {
     cout << "Partition #" << partitions.get(i)->getNumber() << endl;
     cout << "size: " << partitions.get(i)->getSize();
     cout << ", status: " << partitions.get(i)->isFree() << endl;
@@ -219,7 +230,7 @@ void display (Jobs & jobs, Partitions & partitions) {
     }
     // Else if there is a job assigned.
     else {
-      cout << "job name:" << partitions.get(i)->getJob() << endl;
+      cout << "job name: " << partitions.get(i)->getJob();
       cout << ", job size: " << partitions.get(i)->getJobSize() << endl;
       cout << "memory wasted: " << partitions.get(i)->getUnused() << endl;
     }
