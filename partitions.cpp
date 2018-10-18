@@ -36,6 +36,9 @@ Partitions::Partitions (int maxSize) {
   partitions.reserve(maxSize);
 }
 Partitions::~Partitions () {
+  for (int i = 0; i < partitions.size(); i++) {
+    delete & partitions[i];
+  }
   partitions.clear();
   partitions.swap(partitions);
 }

@@ -39,6 +39,9 @@ Jobs::Jobs (int maxSize) {
 
 // Clear memory.
 Jobs::~Jobs () {
+  for (int i = 0; i < jobs.size(); i++) {
+    delete & jobs[i];
+  }
   jobs.clear();
   jobs.swap(jobs);
 }
