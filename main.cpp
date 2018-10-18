@@ -191,6 +191,8 @@ int main () {
 			return -1;
 	}
 
+  skipLines(2);
+
   display(jobs, partitions);
 
   jobs.~Jobs();
@@ -206,13 +208,18 @@ void display (Jobs & jobs, Partitions & partitions) {
   for (int i = 0; i < jobs.size(); i++) {
     cout << "Job name: " << jobs.get(i)->getName();
     cout << ", size: " << jobs.get(i)->getSize();
-    cout << ", status: " << jobs.get(i)->getStatus() << endl;
+    cout << ", status: ";
 
-    if (jobs.get(i)->getPartition() == -1) {
-      cout << "no partition assigned to this job" << endl;
+    if (jobs.get(i)->getStatus())
+      cout << "running" << endl;
+    else
+      cout << "waiting" << endl;
+
+    if (jobs.get(i)->getStatus()) {
+      cout << "assigned to partition # " << jobs.get(i)->getPartition() << endl;
     }
     else {
-      cout << "assigned to partition # " << jobs.get(i)->getPartition() << endl;
+      cout << "no partition assigned to this job" << endl;
     }
     cout << endl;
   }
