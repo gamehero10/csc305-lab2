@@ -1,6 +1,4 @@
 #include <iostream>
-#include "partitions.cpp"
-#include "jobs.cpp"
 #include "fit.cpp"
 
 using namespace std;
@@ -11,141 +9,193 @@ int bestCase ();
 int worstCase ();
 void display (Jobs &, Partitions &);
 
+void skipLines(int n) {
+  for(int i = 0; i < n; i++) {
+    cout << endl;
+  }
+}
+
 int main () {
 	int input = 0;
-	bool loop = true;
+	bool loop = false;
 
+  // Loop for partitions list size.
+  int partitionsListSize;
+  loop = true;
+  while (loop) {
+
+    // Prompt for number of partitions.
+    cout << "How many partitions?" << endl;
+    cout << "count: ";
+    cin >> partitionsListSize;
+
+    // If given valid input break loop.
+    if (partitionsListSize > 0) {
+      loop = false;
+    }
+    // Else prompt error and loop.
+    else {
+      skipLines(2);
+      cout << "That was an incorrect input, try again with values greater than 0." << endl;
+    }
+
+  }
+
+  skipLines(2);
+
+  // Set up partitions list.
+  Partitions partitions (partitionsListSize);
+
+  // Loop for partitions.
+  for (int i = 0; i < partitionsListSize; i++) {
+
+    // The number for the partition.
+    int number;
+
+    // Thee size of the partition.
+    float size;
+    
+    // Loop for partition @ i.
+    loop = true;
+    while (loop) {
+      
+      // Prompt number of partition.
+      cout << "Partition #" << i << " number: ";
+      cin >> number;
+      
+      // Prompt size of partition.
+      cout << "Size of partition: ";
+      cin >> size;
+
+      // If given valid input, break loop.
+      if (number > -1 && size >= 0)
+        loop = false;
+
+      // Else if given invalid input, prompt error and try again.
+      else {
+        skipLines(2);
+        cout << "That was an incorrect input, try again with a partition number greater than -1 and a size greater than or equal to 0" << endl;
+      }
+      
+    }
+
+    // Set partition.
+    partitions.create(number, size);
+    skipLines(2);
+  }
+
+  // Loop for jobs list size.
+  int jobsListSize;
+  loop = true;
+  while (loop) {
+
+    // Prompt for number of jobs.
+    cout << "How many jobs?" << endl;
+    cout << "count: ";
+    cin >> jobsListSize;
+
+    // If given valid input break loop.
+    if (jobsListSize > 0) {
+      loop = false;
+    }
+    // Else prompt error and loop.
+    else {
+      skipLines(2);
+      cout << "That was an incorrect input, try again with values greater than 0." << endl;
+    }
+
+  }
+
+  skipLines(2);
+
+  // Set up jobs list.
+  Jobs jobs (jobsListSize);
+
+  // Loop for jobs.
+  for (int i = 0; i < jobsListSize; i++) {
+
+    // The name for the job.
+    string name;
+
+    // Thee size of the job.
+    float size;
+    
+    // Loop for job @ i.
+    loop = true;
+    while (loop) {
+      
+      // Prompt name of job.
+      cout << "Job #" << i << " name: ";
+      cin >> name;
+      
+      // Prompt size of job.
+      cout << "Size of job: ";
+      cin >> size;
+
+      // If given valid input, break loop.
+      if (name.length() > 0 && size >= 0)
+        loop = false;
+
+      // Else if given invalid input, prompt error and try again.
+      else {
+        skipLines(2);
+        cout << "That was an incorrect input, try again with a name of at least 1 character and a size greater than or equal to 0" << endl;
+      }
+      
+    }
+
+    // Set job.
+    jobs.create(name, size);
+    skipLines(2);
+  }
+
+  // Loop for method of algorithm.
+  input = 0;
+  loop = true;
 	while (loop) {
-		cout << "1) first case" << endl;
-		cout << "2) next case" << endl;
-		cout << "3) best case" << endl;
-		cout << "4) worst case" << endl;
-		cout << "case: " << endl;
+
+    // Prompt for algorithm selection.
+    cout << "Which algorithm will be used?" << endl; 
+		cout << "1) First-fit" << endl;
+		cout << "2) Next-fit" << endl;
+		cout << "3) Best-fit" << endl;
+		cout << "4) Worst-fit" << endl;
+		cout << "case: ";
 		cin >> input;
+
+    // If given valid input, break loop.
 		if (input > 0 && input < 5)
 			loop = false;
+    // Else prompt error and loop.
+    else {
+      skipLines(2);
+      cout << "That was an incorrect input, try again with values of 1 thru 4." << endl;
+    }
 	}
 
+  // Run algorithm based in input.
 	switch (input) {
 		case 1:
-			return firstCase();
+			Fit::firstFit(jobs, partitions);
 		case 2:
-			return nextCase();
+			Fit::nextFit(jobs, partitions);
 		case 3:
-			return bestCase();
+			Fit::bestFit(jobs, partitions);
 		case 4:
-			return worstCase();
+			Fit::worstFit(jobs, partitions);
 		default:
 			return -1;
 	}
-}
 
-int firstCase () {
-  cout << "First Fit Case" << endl << endl;
-  // Partitions
-  Partitions partitions (5);
-  partitions.create(16.0f, 0); // Partition # 0
-  partitions.create(32.0f, 1); // Partition # 1
-  partitions.create(64.0f, 2); // Partition # 2
-  partitions.create(256.0f, 3); // Partition # 3
-  partitions.create(128.0f, 4); // Partition # 4
-  // Jobs
-  Jobs jobs (5);
-  jobs.create(30.0f, 0); // Job # 0, which should assign to partition # 1
-  jobs.create(16.0f, 1); // Job # 1, which should assign to partition # 0
-  jobs.create(200.0f, 2); // Job # 2, which should assign to partition # 3
-  jobs.create(60.0f, 3); // Job # 3, which should assign to partition # 2
-  jobs.create(130.0f, 4); // Job # 4, which should not assign to any partition at all.
-  // Fit
-  for (int i = 0; i < 5; i++) {
-    Fit::firstFit(jobs.get(i), partitions);
-  }
-  // Display
-  display(jobs, partitions);
-  return 0;
-}
-
-int nextCase () {
-  cout << "Next Fit Case" << endl << endl;
-  // Partitions
-  Partitions partitions (5);
-  partitions.create(16.0f, 0); // Partition # 0
-  partitions.create(32.0f, 1); // Partition # 1
-  partitions.create(64.0f, 2); // Partition # 2
-  partitions.create(256.0f, 3); // Partition # 3
-  partitions.create(128.0f, 4); // Partition # 4
-  // Jobs
-  Jobs jobs (5);
-  jobs.create(30.0f, 0); // Job # 0, which should assign to partition # 1
-  jobs.create(16.0f, 1); // Job # 1, which should assign to partition # 0
-  jobs.create(200.0f, 2); // Job # 2, which should assign to partition # 3
-  jobs.create(60.0f, 3); // Job # 3, which should assign to partition # 2
-  jobs.create(130.0f, 4); // Job # 4, which should not assign to any partition at all.
-  // Fit
-  int nextPartition = -1;
-  for (int i = 0; i < 5; i++) {
-    nextPartition = Fit::nextFit(jobs.get(i), partitions, nextPartition);
-  }
-  // Display
-  display(jobs, partitions);
-  return 0;
-}
-
-int bestCase () {
-  cout << "Best Fit Case" << endl << endl;
-  // Partitions
-  Partitions partitions (5);
-  partitions.create(256.0f, 0); // Partition # 0
-  partitions.create(128.0f, 1); // Partition # 1
-  partitions.create(64.0f, 2); // Partition # 2
-  partitions.create(32.0f, 3); // Partition # 3
-  partitions.create(16.0f, 4); // Partition # 4
-  // Jobs
-  Jobs jobs (5);
-  jobs.create(120.0f, 0); // Job # 0, which should assign to partition # 1
-  jobs.create(30.0f, 1); // Job # 1, which should assign to partition # 3
-  jobs.create(60.0f, 2); // Job # 2, which should assign to partition # 2
-  jobs.create(15.0f, 3); // Job # 3, which should assign to partition # 4
-  jobs.create(300.0f, 4); // Job # 4, which should not assign to any partition at all.
-  // Fit
-  for (int i = 0; i < 5; i++) {
-    Fit::bestFit(jobs.get(i), partitions);
-  }
-  // Display
-  display(jobs, partitions);
-  return 0;
-}
-
-int worstCase () {
-  cout << "Worst Fit Case" << endl << endl;
-  // Partitions
-  Partitions partitions (5);
-  partitions.create(16.0f, 0); // Partition # 0
-  partitions.create(32.0f, 1); // Partition # 1
-  partitions.create(64.0f, 2); // Partition # 2
-  partitions.create(128.0f, 3); // Partition # 3
-  partitions.create(256.0f, 4); // Partition # 4
-  // Jobs
-  Jobs jobs (5);
-  jobs.create(30.0f, 0); // Job # 0, which should assign to partition # 4
-  jobs.create(16.0f, 1); // Job # 1, which should assign to partition # 3
-  jobs.create(5.0f, 2); // Job # 2, which should assign to partition # 2
-  jobs.create(8.0f, 3); // Job # 3, which should assign to partition # 1
-  jobs.create(100.0f, 4); // Job # 4, which should not assign to any partition at all.
-  // Fit
-  for (int i = 0; i < 5; i++) {
-    Fit::worstFit(jobs.get(i), partitions);
-  }
-  // Display
-  display(jobs, partitions);
-  return 0;
+  jobs.~Jobs();
+  partitions.~Partitions();
 }
 
 void display (Jobs & jobs, Partitions & partitions) {
   for (int i = 0; i < 5; i++) {
-    cout << "Job #" << jobs.get(i)->getNumber();
+    cout << "Job name" << jobs.get(i)->getName();
     cout << ", size: " << jobs.get(i)->getSize();
-    cout << ", status: " << jobs.get(i)->getStatusString() << endl;
+    cout << ", status: " << jobs.get(i)->getStatus() << endl;
 
     if (jobs.get(i)->getPartition() == -1) {
       cout << "no partition assigned to this job" << endl;
@@ -160,18 +210,17 @@ void display (Jobs & jobs, Partitions & partitions) {
 
   for (int i = 0; i < 5; i++) {
     cout << "Partition #" << partitions.get(i)->getNumber() << endl;
-
     cout << "size: " << partitions.get(i)->getSize();
-    cout << ", status: " << partitions.get(i)->getStatusString() << endl;
+    cout << ", status: " << partitions.get(i)->isFree() << endl;
 
     // If there is no job assigned to this partition.
-    if (partitions.get(i)->getJob() == -1) {
+    if (partitions.get(i)->isFree()) {
       cout << "no job assigned to this partition" << endl;
     }
     // Else if there is a job assigned.
     else {
-      cout << "job #" << jobs.get( partitions.get(i)->getJob() )->getNumber();
-      cout << ", job size: " << jobs.get( partitions.get(i)->getJob() )->getSize() << endl;
+      cout << "job name:" << partitions.get(i)->getJob() << endl;
+      cout << ", job size: " << partitions.get(i)->getJobSize() << endl;
       cout << "memory wasted: " << partitions.get(i)->getUnused() << endl;
     }
     cout << endl;
