@@ -112,6 +112,8 @@ void Fit::bestFit (Jobs & jobs, Partitions & partitions) {
 
   }
 
+  return;
+
 }
 
 void Fit::worstFit (Jobs & jobs, Partitions & partitions) {
@@ -149,4 +151,6 @@ void Fit::worstFit (Jobs & jobs, Partitions & partitions) {
     }
 
   }
+
+  return;
 }
